@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "sourceMap": true,
+
+    "lib": ["es2020", "dom"],
+    "baseUrl": "./",
+
+    // Shortcuts to avoid up-one-level hell:
+    // Turns "../../../utils" into "Utils"
+    "paths": {
+      "Utils": ["src/utils"]
+    },
+
+    // Gives error if there are implied "<any>" types.
+    "noImplicitAny": true,
+
+    // Allows you to access non-constant properties, such as object[keyVar]
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "exclude": ["node_modules"]
+}
