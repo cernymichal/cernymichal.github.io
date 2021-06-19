@@ -7,7 +7,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "dev": "webpack serve --progress --mode development",
-    "deploy": "webpack build --progress --mode production && gh-pages -d dist"
+    "deploy": "webpack build --progress --mode production && (echo cerny.moe) > ./dist/CNAME && gh-pages -d dist"
   },
   "repository": {
     "type": "git",
