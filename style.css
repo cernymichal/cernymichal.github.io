@@ -1,0 +1,92 @@
+@font-face {
+    font-family: "AbhayaLibre";
+    src: local("AbhayaLibre"),
+        url(font/AbhayaLibre-Regular.woff2) format("woff2"),
+        url(font/AbhayaLibre-Regular.woff) format("woff");
+    font-style: normal;
+    font-weight: 400;
+}
+
+/*
+@font-face {
+    font-family: "AbhayaLibre";
+    src: local("AbhayaLibre"),
+        url(font/AbhayaLibre-Medium.woff2) format("woff2"),
+        url(font/AbhayaLibre-Medium.woff) format("woff");
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "AbhayaLibre";
+    src: local("AbhayaLibre"),
+        url(font/AbhayaLibre-SemiBold.woff2) format("woff2"),
+        url(font/AbhayaLibre-SemiBold.woff) format("woff");
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "AbhayaLibre";
+    src: local("AbhayaLibre"),
+        url(font/AbhayaLibre-Bold.woff2) format("woff2"),
+        url(font/AbhayaLibre-Bold.woff) format("woff");
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "AbhayaLibre";
+    src: local("AbhayaLibre"),
+        url(font/AbhayaLibre-ExtraBold.woff2) format("woff2"),
+        url(font/AbhayaLibre-ExtraBold.woff) format("woff");
+    font-style: normal;
+    font-weight: 800;
+}
+*/
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: black;
+    height: 100vh;
+    font-family: "AbhayaLibre", serif;
+    color: white;
+}
+
+header {
+    position: fixed;
+    top: 40px;
+    left: 30px;
+}
+
+p,
+h1 {
+    margin: 0;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 3em;
+}
+
+a {
+    color: white;
+}
+
+main {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+}
+
+footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #aaaaaa;
+    text-align: center;
+}
