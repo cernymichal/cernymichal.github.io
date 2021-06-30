@@ -5,6 +5,7 @@
         url(font/AbhayaLibre-Regular.woff) format("woff");
     font-style: normal;
     font-weight: 400;
+    font-display: swap;
 }
 
 /*
@@ -15,6 +16,7 @@
         url(font/AbhayaLibre-Medium.woff) format("woff");
     font-style: normal;
     font-weight: 500;
+    font-display: swap;
 }
 
 @font-face {
@@ -24,6 +26,7 @@
         url(font/AbhayaLibre-SemiBold.woff) format("woff");
     font-style: normal;
     font-weight: 600;
+    font-display: swap;
 }
 
 @font-face {
@@ -33,6 +36,7 @@
         url(font/AbhayaLibre-Bold.woff) format("woff");
     font-style: normal;
     font-weight: 700;
+    font-display: swap;
 }
 
 @font-face {
@@ -42,6 +46,7 @@
         url(font/AbhayaLibre-ExtraBold.woff) format("woff");
     font-style: normal;
     font-weight: 800;
+    font-display: swap;
 }
 */
 
