@@ -85,13 +85,23 @@ main {
 footer {
     position: fixed;
     bottom: 10px;
-    left: 50%;
+    left: 50vw;
     transform: translateX(-50%);
     color: #aaaaaa;
-    text-align: center;
 }
-
 
 footer a {
     color: #aaaaaa;
+}
+
+@media only screen and (max-width: 500px) {
+    header, footer {
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+
+    footer {
+        transform: unset;
+    }
 }
