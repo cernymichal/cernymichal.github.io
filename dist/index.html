@@ -9,10 +9,19 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=no"
     />
     <meta name="author" content="Michal Černý" />
-    <meta name="description" content="( ´ ▽ ` )ﾉ">
+    <meta name="description" content="( ´ ▽ ` )ﾉ" />
     <link rel="stylesheet" href="style.css" />
+    <noscript>
+      <style>
+        #loading-bar {
+          display: none;
+        }
+      </style>
+    </noscript>
   </head>
-  <body style="background: black;">
+  <body style="background: #010101">
+    <div id="loading-bar"></div>
+
     <canvas id="webgl-canvas"></canvas>
 
     <header>
@@ -23,7 +32,12 @@
       <a href="https://github.com/cernymichal">github</a>
     </main>
 
-    <footer>2021 | <a href="https://github.com/cernymichal/cernymichal.github.io">source code</a>, under&nbsp;construction</footer>
+    <footer>
+      2021 |
+      <a href="https://github.com/cernymichal/cernymichal.github.io"
+        >source code</a
+      >, under&nbsp;construction
+    </footer>
 
     <script src="main.js" async></script>
   </body>

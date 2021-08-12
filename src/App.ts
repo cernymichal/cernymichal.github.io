@@ -8,12 +8,15 @@ import View from "./webgl/View";
 
 class App {
     private view: View;
+    private debug: boolean;
 
-    constructor() {
+    constructor(debug: boolean) {
+        this.debug = debug;
+
         const canvasBox = <HTMLCanvasElement>(
             document.getElementById("webgl-canvas")
         );
-        this.view = new View(canvasBox);
+        this.view = new View(canvasBox, this.debug);
 
         window.addEventListener("resize", this.resize);
         this.update(0);
@@ -29,4 +32,8 @@ class App {
     };
 }
 
-const app = new App();
+const urlParams = new URLSearchParams(window.location.search);
+const debug =
+    process.env.NODE_ENV === "development" && urlParams.get("debug") === "true";
+
+const app = new App(debug);

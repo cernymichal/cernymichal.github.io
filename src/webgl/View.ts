@@ -20,17 +20,14 @@ export default class View {
 
     private loading: number;
 
-    constructor(canvasElem: HTMLCanvasElement) {
+    constructor(canvasElem: HTMLCanvasElement, debug: boolean) {
         this.renderer = new THREE.WebGLRenderer({
             canvas: canvasElem,
             antialias: true,
         });
 
         this.camera = new THREE.PerspectiveCamera(40, 1, 1, 2000);
-        const angle =
-            process.env.NODE_ENV === "production"
-                ? Math.random() * Math.PI * 2
-                : 0.0;
+        const angle = debug ? 0.0 : Math.random() * Math.PI * 2;
         this.camera.position.set(Math.cos(angle) * 4, 3, Math.sin(angle) * 4);
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x101010);
@@ -40,7 +37,7 @@ export default class View {
             this.camera,
             this.renderer.domElement
         );
-        if (process.env.NODE_ENV === "production") {
+        if (!debug) {
             this.controls.enableDamping = true;
             this.controls.enablePan = false;
             this.controls.enableZoom = false;
@@ -69,7 +66,7 @@ export default class View {
     public update(secs: number): void {
         this.controls.update();
 
-        if (this.loading == 100) {
+        if (this.loading == 1) {
             this.water.update(secs);
             this.steam.update(secs);
         }
@@ -79,6 +76,7 @@ export default class View {
 
     private _loadScene() {
         this.loading = 0;
+        const loadingBar = document.getElementById("loading-bar");
 
         const loader = new GLTFLoader();
         loader.load(
@@ -99,14 +97,17 @@ export default class View {
                 this.water = new Water(this.scene, water.geometry);
                 this.steam = new Steam(this.scene, steam.position);
 
-                this.loading = 100;
+                document.getElementById("webgl-canvas").classList.add("show");
+                this.loading = 1;
             },
             (xhr) => {
-                this.loading = (xhr.loaded / xhr.total) * 100;
-                console.log(this.loading + "% loaded");
+                this.loading = xhr.loaded / xhr.total;
+                console.log(`${this.loading * 100}% loaded`);
+                loadingBar.style.width = `${this.loading * 200}px`;
             },
             (error) => {
-                console.log("Loading scene failed");
+                console.log("Loading failed");
+                loadingBar.style.width = "0";
             }
         );
     }
