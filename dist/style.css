@@ -57,8 +57,12 @@ html {
     overflow: hidden;
     background: transparent;
     height: 100vh;
+}
+
+body {
     font-family: "AbhayaLibre", serif;
     color: white;
+    background-color: #101010;
 }
 
 #loading-bar {
