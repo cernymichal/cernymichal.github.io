@@ -55,14 +55,36 @@ html {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background: black;
+    background: transparent;
     height: 100vh;
     font-family: "AbhayaLibre", serif;
     color: white;
 }
 
+#loading-bar {
+    background-color: #aaaaaa;
+    border-radius: 1px;
+    width: 10px;
+    height: 5px;
+    position: fixed;
+    z-index: -1;
+    top: 60vh;
+    left: 50vw;
+    margin-left: -100px;
+}
+
+#webgl-canvas {
+    opacity: 0;
+}
+
+#webgl-canvas.show {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
 header {
     position: fixed;
+    z-index: 1;
     top: 40px;
     left: 30px;
 }
@@ -83,12 +105,14 @@ a {
 
 main {
     position: fixed;
+    z-index: 1;
     bottom: 100px;
     right: 30px;
 }
 
 footer {
     position: fixed;
+    z-index: 1;
     bottom: 10px;
     left: 50vw;
     transform: translateX(-50%);
@@ -100,7 +124,8 @@ footer a {
 }
 
 @media only screen and (max-width: 500px) {
-    header, footer {
+    header,
+    footer {
         left: 0;
         right: 0;
         text-align: center;
