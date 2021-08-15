@@ -88,7 +88,6 @@ body {
 
 header {
     position: fixed;
-    z-index: 1;
     top: 40px;
     left: 30px;
 }
@@ -100,7 +99,7 @@ h1 {
 
 h1 {
     font-weight: normal;
-    font-size: 3em;
+    font-size: 4em;
 }
 
 a {
@@ -109,14 +108,13 @@ a {
 
 main {
     position: fixed;
-    z-index: 1;
     bottom: 100px;
     right: 30px;
+    font-size: 2em;
 }
 
 footer {
     position: fixed;
-    z-index: 1;
     bottom: 10px;
     left: 50vw;
     transform: translateX(-50%);
@@ -126,6 +124,17 @@ footer {
 footer a {
     color: #aaaaaa;
 }
+
+@media only screen and (max-width: 800px) {
+    h1 {
+        font-size: 3.5em;
+    }
+
+    main {
+        font-size: 1.75em;
+    }
+}
+
 
 @media only screen and (max-width: 500px) {
     header,
@@ -138,4 +147,13 @@ footer a {
     footer {
         transform: unset;
     }
+
+    h1 {
+        font-size: 3em;
+    }
+
+    main {
+        font-size: 1.5em;
+    }
 }
+
