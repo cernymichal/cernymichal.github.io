@@ -2,12 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import Water from "./Water";
-import Steam from "./Steam";
-import Cup from "./Cup";
-import Cube from "./Cube";
-import Tea from "./Tea";
-import Base from "./Base";
+import Materials, { getTimeUniforms } from "./Materials";
 
 export default class View {
     private renderer: THREE.WebGLRenderer;
@@ -15,8 +10,7 @@ export default class View {
     private camera: THREE.PerspectiveCamera;
     private controls: OrbitControls;
 
-    private water: Water;
-    private steam: Steam;
+    private timeUniforms: THREE.IUniform[];
 
     private loading: number;
 
@@ -63,12 +57,13 @@ export default class View {
         this.camera.updateProjectionMatrix();
     }
 
-    public update(secs: number): void {
+    public update(time: number): void {
         this.controls.update();
 
         if (this.loading == 1) {
-            this.water.update(secs);
-            this.steam.update(secs);
+            for (const u of this.timeUniforms) {
+                u.value = time;
+            }
         }
 
         this.renderer.render(this.scene, this.camera);
@@ -78,24 +73,19 @@ export default class View {
         this.loading = 0;
         const loadingBar = document.getElementById("loading-bar");
 
+        const materials = new Materials();
+        this.timeUniforms = getTimeUniforms(materials);
+
         const loader = new GLTFLoader();
         loader.load(
-            "media/scene.glb",
+            "media/view.glb",
             (gltf) => {
-                const cube = gltf.scene.getObjectByName("cube") as THREE.Mesh;
-                const base = gltf.scene.getObjectByName("base") as THREE.Mesh;
-                const water = gltf.scene.getObjectByName("water") as THREE.Mesh;
-                const cup = gltf.scene.getObjectByName("cup") as THREE.Mesh;
-                const tea = gltf.scene.getObjectByName("tea") as THREE.Mesh;
-                const steam = gltf.scene.getObjectByName("steam");
+                for (const name in materials) {
+                    const obj = gltf.scene.getObjectByName(name) as THREE.Mesh;
+                    const material = materials[name];
 
-                new Cube(this.scene, cube.geometry);
-                new Base(this.scene, base.geometry);
-                new Cup(this.scene, cup.geometry);
-                new Tea(this.scene, tea.geometry);
-
-                this.water = new Water(this.scene, water.geometry);
-                this.steam = new Steam(this.scene, steam.position);
+                    this.scene.add(new THREE.Mesh(obj.geometry, material));
+                }
 
                 document.getElementById("webgl-canvas").classList.add("show");
                 this.loading = 1;
