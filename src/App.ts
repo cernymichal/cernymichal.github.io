@@ -26,8 +26,8 @@ class App {
         this.view.onWindowResize(window.innerWidth, window.innerHeight);
     };
 
-    private update = (t: number): void => {
-        this.view.update(t / 1000);
+    private update = (time: number): void => {
+        this.view.update(time);
         requestAnimationFrame(this.update);
     };
 }

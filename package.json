@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "webpack serve --mode development --devtool source-map",
     "build": "webpack build --progress --mode production",
-    "deploy": "npm run build && (echo cerny.moe) > ./dist/CNAME && gh-pages -d dist"
+    "deploy": "npm run build && (echo cerny.moe) > ./dist/CNAME && gh-pages -d dist",
+    "export-view": "blender ./blend/view.blend --background --python ./blend/export-view.py"
   },
   "repository": {
     "type": "git",
