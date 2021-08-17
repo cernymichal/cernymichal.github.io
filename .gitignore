@@ -1,5 +1,6 @@
 dist/main.js
 dist/main.js.LICENSE.txt
+dist/loader.js
 dist/CNAME
 todo.md
 blend/*.blend1

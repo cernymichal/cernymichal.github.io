@@ -1,3 +1,4 @@
-export function randInt(low: number, high: number): number {
-    return low + Math.floor(Math.random() * (high - low + 1));
-}
+export const updateLoading = (loadingBar: HTMLElement, loaded: number) => {
+    console.log(`${loadingBar.id} - ${loaded * 100}% loaded`);
+    loadingBar.style.width = `${loaded * 200}px`;
+};

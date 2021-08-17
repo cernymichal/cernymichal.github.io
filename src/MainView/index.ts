@@ -2,9 +2,10 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { updateLoading, toggleCanvas } from "../App";
 import Materials, { getTimeUniforms } from "./Materials";
 
-export default class View {
+export default class MainView {
     private renderer: THREE.WebGLRenderer;
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
@@ -12,21 +13,54 @@ export default class View {
 
     private timeUniforms: THREE.IUniform[];
 
-    private loading: number;
+    constructor(canvas: HTMLCanvasElement, debug: boolean) {
+        // reset loading
+        updateLoading(0);
+        toggleCanvas(false);
 
-    constructor(canvasElem: HTMLCanvasElement, debug: boolean) {
         this.renderer = new THREE.WebGLRenderer({
-            canvas: canvasElem,
+            canvas: canvas,
             antialias: true,
         });
 
+        // camera
         this.camera = new THREE.PerspectiveCamera(40, 1, 1, 2000);
         const angle = debug ? 0.0 : Math.random() * Math.PI * 2;
         this.camera.position.set(Math.cos(angle) * 4, 3, Math.sin(angle) * 4);
+
+        // scene
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x101010);
 
-        // Orbit controls
+        // materials init
+        const materials = new Materials();
+        this.timeUniforms = getTimeUniforms(materials);
+
+        // load main-view.glb and apply materials
+        const loader = new GLTFLoader();
+        loader.load(
+            "assets/main-view.glb",
+            (gltf) => {
+                for (const name in materials) {
+                    const obj = gltf.scene.getObjectByName(name) as THREE.Mesh;
+                    const material = materials[name];
+
+                    this.scene.add(new THREE.Mesh(obj.geometry, material));
+                }
+
+                updateLoading(1);
+                toggleCanvas(true);
+            },
+            (xhr) => {
+                updateLoading(xhr.loaded / xhr.total);
+            },
+            (error) => {
+                console.log(`Loading failed\n${error.message}`);
+                updateLoading(0);
+            }
+        );
+
+        // orbit controls
         this.controls = new OrbitControls(
             this.camera,
             this.renderer.domElement
@@ -42,12 +76,10 @@ export default class View {
         }
         this.controls.update();
 
-        // Lighting
+        // lighting
         this.scene.add(new THREE.AmbientLight(0xffffff, 1));
 
-        this._loadScene();
-
-        // Set initial sizes
+        // initial size
         this.onWindowResize(window.innerWidth, window.innerHeight);
     }
 
@@ -60,45 +92,10 @@ export default class View {
     public update(time: number): void {
         this.controls.update();
 
-        if (this.loading == 1) {
-            for (const u of this.timeUniforms) {
-                u.value = time;
-            }
+        for (const u of this.timeUniforms) {
+            u.value = time;
         }
 
         this.renderer.render(this.scene, this.camera);
-    }
-
-    private _loadScene() {
-        this.loading = 0;
-        const loadingBar = document.getElementById("loading-bar");
-
-        const materials = new Materials();
-        this.timeUniforms = getTimeUniforms(materials);
-
-        const loader = new GLTFLoader();
-        loader.load(
-            "media/view.glb",
-            (gltf) => {
-                for (const name in materials) {
-                    const obj = gltf.scene.getObjectByName(name) as THREE.Mesh;
-                    const material = materials[name];
-
-                    this.scene.add(new THREE.Mesh(obj.geometry, material));
-                }
-
-                document.getElementById("webgl-canvas").classList.add("show");
-                this.loading = 1;
-            },
-            (xhr) => {
-                this.loading = xhr.loaded / xhr.total;
-                console.log(`${this.loading * 100}% loaded`);
-                loadingBar.style.width = `${this.loading * 200}px`;
-            },
-            (error) => {
-                console.log("Loading failed");
-                loadingBar.style.width = "0";
-            }
-        );
     }
 }

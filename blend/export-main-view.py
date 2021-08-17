@@ -3,7 +3,7 @@
 import bpy
 import os
 
-filename = os.path.join(os.getcwd(), "dist", "media", "view.glb")
+filename = os.path.join(os.getcwd(), "dist", "assets", "main-view.glb")
 
 bpy.ops.object.select_all(action="DESELECT")
 

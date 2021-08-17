@@ -1,10 +1,10 @@
 const webpack = require("webpack");
 const path = require("path");
 
-// http://webpack.github.io/docs/configuration.html
 module.exports = {
   entry: {
     main: "./src/App.ts",
+    loader: "./src/Loader.ts",
   },
 
   // Outputs compiled bundle to `./dist/js/main.js`

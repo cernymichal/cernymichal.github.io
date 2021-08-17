@@ -1,39 +1,38 @@
-/*
+import * as Utils from "Utils";
+import MainView from "./MainView";
 
-Entry from Webpack, generates Three.js View
+export const canvas = document.getElementById("webgl-canvas") as HTMLCanvasElement;
+const loadingBar = document.getElementById("loading-bar");
 
-*/
+// loading bar api
+export const updateLoading = (loaded: number) => {
+    Utils.updateLoading(loadingBar, loaded);
+};
 
-import View from "./webgl/View";
-
-class App {
-    private view: View;
-    private debug: boolean;
-
-    constructor(debug: boolean) {
-        this.debug = debug;
-
-        const canvasBox = <HTMLCanvasElement>(
-            document.getElementById("webgl-canvas")
-        );
-        this.view = new View(canvasBox, this.debug);
-
-        window.addEventListener("resize", this.resize);
-        this.update(0);
+export const toggleCanvas = (show: boolean) => {
+    if (show && !canvas.classList.contains("show")) {
+        canvas.classList.add("show");
+    } else if (!show && canvas.classList.contains("show")) {
+        canvas.classList.remove("show");
     }
+};
 
-    private resize = (): void => {
-        this.view.onWindowResize(window.innerWidth, window.innerHeight);
-    };
-
-    private update = (time: number): void => {
-        this.view.update(time);
-        requestAnimationFrame(this.update);
-    };
-}
-
+// get debug state from url
 const urlParams = new URLSearchParams(window.location.search);
-const debug =
-    process.env.NODE_ENV === "development" && urlParams.get("debug") === "true";
+const debug = process.env.NODE_ENV === "development" && urlParams.get("debug") === "true";
 
-const app = new App(debug);
+// initialize view
+const view = new MainView(canvas, debug);
+
+// main loop
+const update = (time: number): void => {
+    view.update(time);
+    requestAnimationFrame(update);
+};
+
+// resize renderer in view
+window.addEventListener("resize", () => {
+    view.onWindowResize(window.innerWidth, window.innerHeight);
+});
+
+update(0);
