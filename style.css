@@ -65,16 +65,28 @@ body {
     background-color: #101010;
 }
 
-#loading-bar {
+.loading-bar {
     background-color: #aaaaaa;
     border-radius: 1px;
-    width: 10px;
-    height: 5px;
+    width: 0px;
+    transition: width 100ms;
+    height: 3px;
     position: fixed;
     z-index: -1;
-    top: 60vh;
     left: 50vw;
     margin-left: -100px;
+}
+
+#app-loading-bar {
+    top: 60vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#loading-bar {
+    top: calc(60vh + 3px);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 #webgl-canvas {
@@ -135,7 +147,6 @@ footer a {
     }
 }
 
-
 @media only screen and (max-width: 500px) {
     header,
     footer {
@@ -156,4 +167,3 @@ footer a {
         font-size: 1.5em;
     }
 }
-
