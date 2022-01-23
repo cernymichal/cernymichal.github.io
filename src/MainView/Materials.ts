@@ -3,16 +3,12 @@ import * as THREE from "three";
 import WaterVert from "./glsl/water.vert";
 import WaterFrag from "./glsl/water.frag";
 
-export default class Materials {
-    cube = new THREE.MeshToonMaterial({
+export default class MaterialsList {
+    cube = new THREE.MeshBasicMaterial({
         color: 0xfae893,
     });
-    base = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.1,
-    });
-    water = new THREE.RawShaderMaterial({
+    base = new THREE.MeshBasicMaterial({ alphaTest: 2 });
+    water = new THREE.ShaderMaterial({
         uniforms: {
             time: { value: 0 },
         },
@@ -20,7 +16,7 @@ export default class Materials {
         fragmentShader: WaterFrag,
         depthWrite: false,
     });
-    cup = new THREE.MeshToonMaterial({
+    cup = new THREE.MeshBasicMaterial({
         color: 0xfac8ac,
     });
     tea = new THREE.MeshBasicMaterial({
@@ -37,6 +33,6 @@ export default class Materials {
     });
 }
 
-export function getTimeUniforms(materials: Materials): THREE.IUniform[] {
+export function getTimeUniforms(materials: MaterialsList): THREE.IUniform[] {
     return [materials.water.uniforms.time];
 }

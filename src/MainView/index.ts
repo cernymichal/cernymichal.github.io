@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Sky } from "three/examples/jsm/objects/Sky.js";
 
 import { updateLoading, toggleCanvas } from "../App";
-import Materials, { getTimeUniforms } from "./Materials";
+import MaterialsList, { getTimeUniforms } from "./Materials";
 
 export default class MainView {
     private renderer: THREE.WebGLRenderer;
@@ -21,6 +22,7 @@ export default class MainView {
         this.renderer = new THREE.WebGLRenderer({
             canvas: canvas,
             antialias: true,
+            powerPreference: "high-performance",
         });
 
         // camera
@@ -33,10 +35,10 @@ export default class MainView {
         this.scene.background = new THREE.Color(0x101010);
 
         // materials init
-        const materials = new Materials();
+        const materials = new MaterialsList();
         this.timeUniforms = getTimeUniforms(materials);
 
-        // load main-view.glb and apply materials
+        // start loading main-view.glb and apply materials
         const loader = new GLTFLoader();
         loader.load(
             "assets/main-view.glb",

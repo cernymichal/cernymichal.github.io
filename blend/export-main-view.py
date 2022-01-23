@@ -1,4 +1,4 @@
-# exports objects collection from as glb
+# exports "objects" collection as glb
 
 import bpy
 import os

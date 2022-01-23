@@ -69,7 +69,7 @@ body {
     background-color: #aaaaaa;
     border-radius: 1px;
     width: 0px;
-    transition: width 100ms;
+    transition: width 200ms;
     height: 3px;
     position: fixed;
     z-index: -1;

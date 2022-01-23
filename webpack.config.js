@@ -47,7 +47,9 @@ module.exports = {
   devServer: {
     host: "0.0.0.0",
     port: 8000,
-    contentBase: path.join(__dirname, "dist"),
-    disableHostCheck: true,
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
+    allowedHosts: "all",
   },
 };

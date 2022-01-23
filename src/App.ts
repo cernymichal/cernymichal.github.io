@@ -1,10 +1,13 @@
 import * as Utils from "Utils";
 import MainView from "./MainView";
 
-export const canvas = document.getElementById("webgl-canvas") as HTMLCanvasElement;
-const loadingBar = document.getElementById("loading-bar");
+export const canvas = document.getElementById(
+    "webgl-canvas"
+) as HTMLCanvasElement;
 
 // loading bar api
+const loadingBar = document.getElementById("loading-bar");
+
 export const updateLoading = (loaded: number) => {
     Utils.updateLoading(loadingBar, loaded);
 };
@@ -19,7 +22,8 @@ export const toggleCanvas = (show: boolean) => {
 
 // get debug state from url
 const urlParams = new URLSearchParams(window.location.search);
-const debug = process.env.NODE_ENV === "development" && urlParams.get("debug") === "true";
+const debug =
+    process.env.NODE_ENV === "development" && urlParams.get("debug") === "true";
 
 // initialize view
 const view = new MainView(canvas, debug);
