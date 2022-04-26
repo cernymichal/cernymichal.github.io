@@ -1,3 +1,3 @@
 # cernymichal.github.io
 
-[cerny.moe](https://cerny.moe)
+[atwitsend.xyz](https://atwitsend.xyz/)
