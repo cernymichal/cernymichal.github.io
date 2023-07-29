@@ -10,36 +10,40 @@
     />
     <meta name="author" content="Michal Černý" />
     <meta name="description" content="( ´ ▽ ` )ﾉ" />
-    <link rel="stylesheet" href="style.css" />
-    <noscript>
-      <style>
-        #loading-bar {
-          display: none;
+
+    <link rel="stylesheet" href="common.css" />
+    <link rel="stylesheet" href="index.css" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@v0.155.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@v0.155.0/examples/jsm/"
         }
-      </style>
-    </noscript>
+      }
+    </script>
   </head>
   <body style="background-color: #101010">
-    <div id="app-loading-bar" class="loading-bar"></div>
-    <div id="loading-bar" class="loading-bar"></div>
-
-    <canvas id="webgl-canvas"></canvas>
+    <canvas id="main-canvas"></canvas>
 
     <header>
       <h1>Michal Černý</h1>
     </header>
 
     <main>
-      <a href="https://github.com/cernymichal">github</a>
+      <ul>
+        <li><a href="projects.html">projects</a></li>
+        <li><a href="https://github.com/cernymichal">github</a></li>
+      </ul>
     </main>
 
     <footer>
-      2021 |
+      2023 |
       <a href="https://github.com/cernymichal/cernymichal.github.io"
         >source code</a
-      >, under&nbsp;construction
+      >
     </footer>
 
-    <script src="loader.js" async></script>
+    <script src="js/index.js" type="module"></script>
   </body>
 </html>
