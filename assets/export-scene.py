@@ -3,7 +3,7 @@
 import bpy
 import os
 
-filename = os.path.join(os.getcwd(), "dist", "assets", "main-view.glb")
+filename = os.path.join(os.getcwd(), "pond.glb")
 
 bpy.ops.object.select_all(action="DESELECT")
 
@@ -31,8 +31,7 @@ bpy.ops.export_scene.gltf(
     export_current_frame=False,
     export_skins=False,
     export_morph=False,
-    export_lights=False,
-    export_displacement=False
+    export_lights=False
 )
 
 print("written: ", filename)

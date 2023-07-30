@@ -12,148 +12,168 @@ const toggleCanvas = (show) => {
 };
 
 const waterVertexShader = `
+varying vec4 v_world_position;
+
 void main() {
+    v_world_position = modelMatrix * vec4( position, 1.0 );
     gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `;
 
 const waterFragmentShader = `
-uniform float time;
+varying vec4 v_world_position;
+
+uniform float u_time;
 
 void main() {
-    gl_FragColor = vec4(0.0, 0.0, (sin(time / 1000.0) + 1.0) / 2.0, 1.0);
+    vec3 color = vec3(0.15, 0.35, 0.8);
+
+    if (length(v_world_position.xz) > 1.7)
+        discard;
+
+    gl_FragColor = vec4(color, 0.7);
 }
 `;
 
 class MaterialsList {
-    cube = new THREE.MeshBasicMaterial({
+    top = new THREE.MeshBasicMaterial({
         color: 0xfae893,
     });
-    base = new THREE.MeshBasicMaterial({ alphaTest: 2 });
+    base = this.top.clone();
     water = new THREE.ShaderMaterial({
-        uniforms: {
-            time: { value: 0 },
-        },
         vertexShader: waterVertexShader,
         fragmentShader: waterFragmentShader,
-        depthWrite: false,
+        transparent: true,
     });
     cup = new THREE.MeshBasicMaterial({
         color: 0xfac8ac,
     });
     tea = new THREE.MeshBasicMaterial({
-        color: 0x000000,
+        color: 0x110000,
         transparent: true,
         opacity: 0.5,
-        depthWrite: false,
     });
     steam = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         transparent: true,
         opacity: 0.2,
-        depthWrite: false,
     });
 }
 
-function getTimeUniforms(materials) {
-    return [materials.water.uniforms.time];
-}
-
-class MainView {
-    constructor(canvas) {
-        toggleCanvas(false);
-
-        this.renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            antialias: true,
-            powerPreference: "high-performance",
-        });
-
-        // camera
-        this.camera = new THREE.PerspectiveCamera(40, 1, 1, 2000);
-        const angle = Math.random() * Math.PI * 2;
-        this.camera.position.set(Math.cos(angle) * 4, 3, Math.sin(angle) * 4);
-
-        // scene
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x101010);
-
-        // materials init
-        const materials = new MaterialsList();
-        this.timeUniforms = getTimeUniforms(materials);
-
-        // start loading main-view.glb and apply materials
-        const loader = new GLTFLoader();
-        loader.load(
-            "assets/main-view.glb",
-            (gltf) => {
-                for (const name in materials) {
-                    const obj = gltf.scene.getObjectByName(name);
-                    const material = materials[name];
-
-                    this.scene.add(new THREE.Mesh(obj.geometry, material));
-                }
-
-                toggleCanvas(true);
-            },
-            (xhr) => {},
-            (error) => {
-                console.log(`Loading failed\n${error.message}`);
-            }
-        );
-
-        // orbit controls
-        this.controls = new OrbitControls(
-            this.camera,
-            this.renderer.domElement
-        );
-
-        this.controls.enableDamping = true;
-        this.controls.enablePan = false;
-        this.controls.enableZoom = false;
-        this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = 0.4;
-        this.controls.maxPolarAngle = (Math.PI / 64) * 31;
-        this.controls.minPolarAngle = Math.PI / 8;
-
-        this.controls.update();
-
-        // lighting
-        this.scene.add(new THREE.AmbientLight(0xffffff, 1));
-
-        // initial size
-        this.onWindowResize(window.innerWidth, window.innerHeight);
-    }
-
-    onWindowResize(vpW, vpH) {
-        this.renderer.setSize(vpW, vpH);
-        this.camera.aspect = vpW / vpH;
-        this.camera.updateProjectionMatrix();
-    }
-
-    update(time) {
-        this.controls.update();
-
-        for (const u of this.timeUniforms) {
-            u.value = time;
-        }
-
-        this.renderer.render(this.scene, this.camera);
-    }
-}
-
-// initialize view
-const view = new MainView(canvas);
-
-// main loop
-const update = (time) => {
-    view.update(time);
-    requestAnimationFrame(update);
+const standard_uniforms = {
+    u_time: new THREE.Uniform(0.0),
+    u_resolution: new THREE.Uniform(new THREE.Vector2()),
 };
 
-// resize renderer in view
-window.addEventListener("resize", () => {
-    view.onWindowResize(window.innerWidth, window.innerHeight);
+toggleCanvas(false);
+
+let renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true,
 });
 
-update(0);
+// camera
+let camera = new THREE.PerspectiveCamera(40, 1, 1, 2000);
+const angle = Math.random() * Math.PI * 2;
+camera.position.set(Math.cos(angle) * 4, 3, Math.sin(angle) * 4);
+
+// scene
+let scene = new THREE.Scene();
+scene.background = new THREE.Color(0x101010);
+scene.fog = new THREE.FogExp2(0x101010, 0.06);
+
+// materials init
+const materials = new MaterialsList();
+
+// start loading pond.glb and apply materials
+const loader = new GLTFLoader();
+loader.load(
+    "assets/pond.glb",
+    (gltf) => {
+        for (const name in materials) {
+            const obj = gltf.scene.getObjectByName(name);
+            if (!obj) continue;
+
+            obj.material = materials[name];
+            obj.material.uniforms = standard_uniforms;
+
+            scene.add(obj);
+        }
+
+        const steam = scene.getObjectByName("steam");
+        const tea = scene.getObjectByName("tea");
+        const water = scene.getObjectByName("water");
+        const base = scene.getObjectByName("base");
+
+        water.renderOrder = 0;
+        tea.renderOrder = 1;
+        steam.renderOrder = 2;
+
+        const waterStencil = water.clone();
+        waterStencil.material = water.material.clone();
+        waterStencil.material.transparent = false;
+        waterStencil.material.colorWrite = false;
+        waterStencil.material.depthWrite = false;
+        waterStencil.material.stencilWrite = true;
+        waterStencil.material.stencilRef = 1;
+        waterStencil.material.stencilFunc = THREE.AlwaysStencilFunc;
+        waterStencil.material.stencilZPass = THREE.ReplaceStencilOp;
+        waterStencil.renderOrder = 0;
+
+        scene.add(waterStencil);
+
+        base.material.stencilWrite = true;
+        base.material.stencilRef = 1;
+        base.material.stencilFunc = THREE.EqualStencilFunc;
+        base.renderOrder = 1;
+
+        toggleCanvas(true);
+    },
+    (xhr) => {},
+    (error) => {
+        console.log(`Loading failed\n${error.message}`);
+    }
+);
+
+// orbit controls
+let controls = new OrbitControls(camera, renderer.domElement);
+
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.enableZoom = false;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.4;
+controls.maxPolarAngle = (Math.PI / 64) * 31;
+controls.minPolarAngle = Math.PI / 8;
+
+controls.update();
+
+// lighting
+scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+const clock = new THREE.Clock();
+
+const render = () => {
+    controls.update();
+
+    standard_uniforms.u_time.value = clock.getElapsedTime();
+
+    requestAnimationFrame(render);
+    renderer.render(scene, camera);
+};
+
+const resizeCanvas = (viewportWidth, viewportHeight) => {
+    renderer.setSize(viewportWidth, viewportHeight);
+    camera.aspect = viewportWidth / viewportHeight;
+    camera.updateProjectionMatrix();
+
+    standard_uniforms.u_resolution.value.x = viewportWidth;
+    standard_uniforms.u_resolution.value.y = viewportHeight;
+};
+
+window.addEventListener("resize", () => {
+    resizeCanvas(window.innerWidth, window.innerHeight);
+});
+
+resizeCanvas(window.innerWidth, window.innerHeight);
+render();
