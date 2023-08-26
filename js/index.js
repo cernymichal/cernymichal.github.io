@@ -25,10 +25,30 @@ varying vec4 v_world_position;
 
 uniform float u_time;
 
+float PI = 3.1415926535897932384626433832795;
+float TWO_PI = 6.283185307179586476925286766559;
+
+vec2 to_polar_coords(vec2 point) {
+    float radius = length(point);
+    float angle = atan(point.y, point.x);
+    return vec2(angle, radius);
+}
+
+float wave(float angle, float time, float amplitude, float frequency) {
+    return sin(angle * frequency + time) * amplitude;
+}
+
 void main() {
     vec3 color = vec3(0.15, 0.35, 0.8);
 
-    if (length(v_world_position.xz) > 1.7)
+    vec2 polar_coords = to_polar_coords(v_world_position.xz);
+    float border_threshold = 1.7
+        + wave(polar_coords.x, u_time * 0.4, 0.04, 1.0)
+        + wave(polar_coords.x, u_time * -0.6, 0.03, 2.0)
+        + wave(polar_coords.x, u_time * 0.7, 0.02, 4.0)
+        + wave(polar_coords.x, u_time * -0.9, 0.01, 8.0);
+
+    if (polar_coords.y > border_threshold)
         discard;
 
     gl_FragColor = vec4(color, 0.7);
@@ -36,7 +56,7 @@ void main() {
 `;
 
 class MaterialsList {
-    top = new THREE.MeshBasicMaterial({
+    top = new THREE.MeshToonMaterial({
         color: 0xfae893,
     });
     base = this.top.clone();
@@ -45,15 +65,15 @@ class MaterialsList {
         fragmentShader: waterFragmentShader,
         transparent: true,
     });
-    cup = new THREE.MeshBasicMaterial({
+    cup = new THREE.MeshToonMaterial({
         color: 0xfac8ac,
     });
-    tea = new THREE.MeshBasicMaterial({
+    tea = new THREE.MeshToonMaterial({
         color: 0x110000,
         transparent: true,
         opacity: 0.5,
     });
-    steam = new THREE.MeshBasicMaterial({
+    steam = new THREE.MeshToonMaterial({
         color: 0xffffff,
         transparent: true,
         opacity: 0.2,
@@ -105,12 +125,15 @@ loader.load(
         const water = scene.getObjectByName("water");
         const base = scene.getObjectByName("base");
 
+        // transparency order
         water.renderOrder = 0;
         tea.renderOrder = 1;
         steam.renderOrder = 2;
 
+        // base stencil
         const waterStencil = water.clone();
         waterStencil.material = water.material.clone();
+        waterStencil.material.uniforms = standard_uniforms;
         waterStencil.material.transparent = false;
         waterStencil.material.colorWrite = false;
         waterStencil.material.depthWrite = false;
@@ -119,7 +142,6 @@ loader.load(
         waterStencil.material.stencilFunc = THREE.AlwaysStencilFunc;
         waterStencil.material.stencilZPass = THREE.ReplaceStencilOp;
         waterStencil.renderOrder = 0;
-
         scene.add(waterStencil);
 
         base.material.stencilWrite = true;
@@ -149,7 +171,7 @@ controls.minPolarAngle = Math.PI / 8;
 controls.update();
 
 // lighting
-scene.add(new THREE.AmbientLight(0xffffff, 1));
+scene.add(new THREE.AmbientLight(0xffffff, 2));
 
 const clock = new THREE.Clock();
 

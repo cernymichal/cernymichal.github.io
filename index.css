@@ -1,3 +1,10 @@
+@import url("common.css");
+
+body {
+    overflow: hidden;
+    height: 100vh;
+}
+
 #main-canvas {
     opacity: 0;
     background-color: red;
@@ -24,8 +31,6 @@ h1 {
     font-size: 6em;
 }
 
-
-
 main {
     position: fixed;
     bottom: 100px;
@@ -40,8 +45,15 @@ main ul {
 }
 
 main ul li {
-    margin: .3em 0;
+    margin: 0.3em 0;
     padding: 0;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 50vw;
+    transform: translateX(-50%);
 }
 
 @media only screen and (max-width: 800px) {

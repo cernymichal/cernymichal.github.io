@@ -1,0 +1,45 @@
+@import url("common.css");
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-size: 1.2rem;
+}
+
+nav {
+    width: 1000px;
+    margin: 10px auto 20px auto;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+main {
+    width: 800px;
+    margin: auto;
+    flex: 1;
+}
+
+h1 {
+    font-size: 4em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+@media only screen and (max-width: 1040px) {
+    nav {
+        width: auto;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    main {
+        width: auto;
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+}

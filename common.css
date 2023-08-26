@@ -4,8 +4,6 @@ body,
 html {
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    height: 100vh;
 }
 
 body {
@@ -19,11 +17,11 @@ a {
 }
 
 footer {
-    position: fixed;
-    bottom: 10px;
-    left: 50vw;
-    transform: translateX(-50%);
+    text-align: center;
+    margin: 0;
+    margin-bottom: 10px;
     color: #aaaaaa;
+    font-size: 1rem !important;
 }
 
 footer a {
